@@ -1,0 +1,40 @@
+server:
+  port: 8080  # Gateway entry point
+
+spring:
+  cloud:
+    gateway:
+      default-filters:
+        - TokenRelay  # Pass the token downstream
+      routes:
+        - id: product-service
+          uri: http://localhost:8081
+          predicates:
+            - Path=/api/products/**
+        - id: order-service
+          uri: http://localhost:8082
+          predicates:
+            - Path=/api/orders/**
+        - id: payment-service
+          uri: http://localhost:8083
+          predicates:
+            - Path=/api/payments/**
+        - id: user-service
+          uri: http://localhost:8084
+          predicates:
+            - Path=/api/users/**
+        - id: ca-catalog-tools-web
+          uri: http://localhost:8085
+          predicates:
+            - Path=/api/ca-catalog/**
+        - id: channel-advisor
+          uri: http://localhost:8086
+          predicates:
+            - Path=/api/channel-advisor/**
+
+  security:
+    oauth2:
+      resourceserver:
+        jwt:
+          issuer-uri: http://localhost:8087/oauth2/default  # Your Auth Server URL (Keycloak/Okta)
+
